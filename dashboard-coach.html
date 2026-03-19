@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>CoachHub — Coach Dashboard</title>
+<link rel="stylesheet" href="style.css"/>
+</head>
+<body style="display:flex">
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <h1>Coach<span>Hub</span></h1>
+    <p>Coach Portal</p>
+  </div>
+  <nav class="sidebar-nav">
+    <button class="nav-item active" onclick="showPage('dashboard',this)"><span class="icon">🏠</span>Dashboard</button>
+    <button class="nav-item" onclick="showPage('players',this)"><span class="icon">👥</span>Players</button>
+    <button class="nav-item" onclick="showPage('matches',this)"><span class="icon">⚽</span>Matches</button>
+    <button class="nav-item" onclick="showPage('leaderboard',this)"><span class="icon">🏆</span>Leaderboard</button>
+    <button class="nav-item" onclick="showPage('training',this)"><span class="icon">💪</span>Training Plans</button>
+    <button class="nav-item" onclick="showPage('announcements',this)"><span class="icon">📢</span>Announcements</button>
+    <button class="nav-item" onclick="showPage('profile',this)"><span class="icon">👤</span>My Profile</button>
+  </nav>
+  <div class="sidebar-bottom">
+    <div class="user-badge">
+      <div class="user-avatar" id="coach-avatar">C</div>
+      <div class="user-info">
+        <p id="coach-name">Coach</p>
+        <span class="role-badge role-coach">Coach</span>
+      </div>
+    </div>
+    <button class="logout-btn" onclick="handleLogout()">⬅ Logout</button>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+  <header class="topbar">
+    <h2 id="page-title">Dashboard</h2>
+    <div class="topbar-right">
+      <div class="date-badge" id="today-date"></div>
+      <span class="role-badge role-coach">Coach</span>
+    </div>
+  </header>
+
+  <!-- ══ DASHBOARD ══ -->
+  <div class="page active" id="page-dashboard">
+    <div class="stat-row">
+      <div class="stat-card sc-blue"><div class="stat-icon">👥</div><div class="stat-val" id="s-players">—</div><div class="stat-label">Total Players</div></div>
+      <div class="stat-card sc-cyan"><div class="stat-icon">⚽</div><div class="stat-val" id="s-matches">—</div><div class="stat-label">Matches Scheduled</div></div>
+      <div class="stat-card sc-gold"><div class="stat-icon">🏆</div><div class="stat-val" id="s-wins">—</div><div class="stat-label">Wins</div></div>
+      <div class="stat-card sc-green"><div class="stat-icon">📢</div><div class="stat-val" id="s-ann">—</div><div class="stat-label">Announcements</div></div>
+    </div>
+    <div class="two-col">
+      <div>
+        <div class="sec-header"><div class="sec-title">Recent Players</div><button class="sec-action" onclick="showPage('players',null)">View All</button></div>
+        <div class="table-wrap"><table>
+          <thead><tr><th>Name</th><th>Sport</th><th>Goals</th><th>Status</th></tr></thead>
+          <tbody id="dash-players-tbody"><tr><td colspan="4" style="color:var(--muted);text-align:center">Loading...</td></tr></tbody>
+        </table></div>
+      </div>
+      <div>
+        <div class="sec-header"><div class="sec-title">Upcoming Matches</div><button class="sec-action" onclick="showPage('matches',null)">View All</button></div>
+        <div id="dash-matches-list"><p class="text-muted">Loading...</p></div>
+        <div class="sec-header" style="margin-top:1.5rem"><div class="sec-title">Latest Announcements</div></div>
+        <div id="dash-ann-list"><p class="text-muted">Loading...</p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ PLAYERS ══ -->
+  <div class="page" id="page-players">
+    <div class="sec-header">
+      <div class="sec-title">Player Management</div>
+      <div style="display:flex;gap:.8rem;align-items:center">
+        <div class="search-bar"><span>🔍</span><input type="text" placeholder="Search players..." oninput="searchPlayers(this.value)"/></div>
+        <button class="btn btn-primary btn-sm" onclick="openPlayerModal()">+ Add Player Stats</button>
+      </div>
+    </div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Name</th><th>Sport</th><th>Position</th><th>#</th><th>Matches</th><th>Goals</th><th>Assists</th><th>Fitness</th><th>Status</th><th>Actions</th></tr></thead>
+      <tbody id="players-tbody"><tr><td colspan="10" style="color:var(--muted);text-align:center;padding:2rem">Loading players...</td></tr></tbody>
+    </table></div>
+  </div>
+
+  <!-- ══ MATCHES ══ -->
+  <div class="page" id="page-matches">
+    <div class="sec-header">
+      <div class="sec-title">Match Schedule & Results</div>
+      <button class="btn btn-primary btn-sm" onclick="openMatchModal()">+ Add Match</button>
+    </div>
+    <div class="tabs">
+      <button class="tab active" onclick="filterMatches('all',this)">All</button>
+      <button class="tab" onclick="filterMatches('upcoming',this)">Upcoming</button>
+      <button class="tab" onclick="filterMatches('completed',this)">Completed</button>
+    </div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Date</th><th>Opponent</th><th>Venue</th><th>Sport</th><th>Type</th><th>Score</th><th>Result</th><th>Actions</th></tr></thead>
+      <tbody id="matches-tbody"><tr><td colspan="8" style="color:var(--muted);text-align:center;padding:2rem">Loading matches...</td></tr></tbody>
+    </table></div>
+  </div>
+
+  <!-- ══ LEADERBOARD ══ -->
+  <div class="page" id="page-leaderboard">
+    <div class="sec-header"><div class="sec-title">Player Leaderboard</div></div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Rank</th><th>Player</th><th>Sport</th><th>Matches</th><th>Goals</th><th>Assists</th><th>Fitness %</th><th>Score</th></tr></thead>
+      <tbody id="lb-tbody"><tr><td colspan="8" style="color:var(--muted);text-align:center;padding:2rem">Loading...</td></tr></tbody>
+    </table></div>
+  </div>
+
+  <!-- ══ TRAINING ══ -->
+  <div class="page" id="page-training">
+    <div class="sec-header">
+      <div class="sec-title">Training Plans</div>
+      <button class="btn btn-primary btn-sm" onclick="openTrainingModal()">+ Add Plan</button>
+    </div>
+    <div id="training-list" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.2rem">
+      <p class="text-muted">Loading...</p>
+    </div>
+  </div>
+
+  <!-- ══ ANNOUNCEMENTS ══ -->
+  <div class="page" id="page-announcements">
+    <div class="sec-header">
+      <div class="sec-title">Announcements</div>
+      <button class="btn btn-primary btn-sm" onclick="openAnnModal()">+ Post Announcement</button>
+    </div>
+    <div id="ann-list"><p class="text-muted">Loading...</p></div>
+  </div>
+
+  <!-- ══ PROFILE ══ -->
+  <div class="page" id="page-profile">
+    <div class="sec-header"><div class="sec-title">My Profile</div></div>
+    <div style="max-width:520px">
+      <div class="card-box" style="margin-bottom:1.5rem">
+        <div style="display:flex;align-items:center;gap:1.2rem;margin-bottom:1.5rem">
+          <div class="user-avatar" style="width:64px;height:64px;font-size:1.6rem" id="profile-avatar">C</div>
+          <div>
+            <h3 id="profile-name" style="font-size:1.2rem;color:var(--white)">—</h3>
+            <span class="role-badge role-coach">Coach</span>
+          </div>
+        </div>
+        <div class="form-group"><label>Full Name</label><input type="text" id="p-name" placeholder="Your name"/></div>
+        <div class="form-group"><label>Sport Specialization</label><input type="text" id="p-sport" placeholder="Football, Cricket..."/></div>
+        <div class="form-group"><label>Experience (years)</label><input type="number" id="p-exp" placeholder="5"/></div>
+        <div class="form-group"><label>Team Code <span style="color:var(--muted);font-size:.7rem">(share with your players)</span></label><input type="text" id="p-team-code" placeholder="e.g. STORM2024" style="text-transform:uppercase"/></div>
+        <button class="btn btn-primary" onclick="saveProfile()">Save Changes</button>
+        <div class="alert alert-success" id="profile-success" style="margin-top:1rem"></div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- ═══ MODALS ═══ -->
+
+<!-- Player Stats Modal -->
+<div class="modal-overlay" id="player-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="player-modal-title">Update Player Stats</h3>
+      <button class="modal-close" onclick="closeModal('player-modal')">✕</button>
+    </div>
+    <input type="hidden" id="pm-uid"/>
+    <div class="form-group"><label>Select Player</label>
+      <select id="pm-player-select" onchange="fillPlayerData()"><option value="">— Choose —</option></select>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.8rem">
+      <div class="form-group"><label>Position</label><input type="text" id="pm-position" placeholder="Forward"/></div>
+      <div class="form-group"><label>Jersey #</label><input type="number" id="pm-jersey" placeholder="10"/></div>
+      <div class="form-group"><label>Matches Played</label><input type="number" id="pm-matches" placeholder="0"/></div>
+      <div class="form-group"><label>Goals</label><input type="number" id="pm-goals" placeholder="0"/></div>
+      <div class="form-group"><label>Assists</label><input type="number" id="pm-assists" placeholder="0"/></div>
+      <div class="form-group"><label>Fitness Score %</label><input type="number" id="pm-fitness" placeholder="85" min="0" max="100"/></div>
+    </div>
+    <div class="form-group"><label>Status</label>
+      <select id="pm-status"><option>Active</option><option>Injured</option><option>Suspended</option><option>Resting</option></select>
+    </div>
+    <button class="btn btn-primary" style="width:100%" onclick="savePlayerStats()">Save Stats</button>
+    <div class="alert alert-success" id="pm-success" style="margin-top:1rem"></div>
+  </div>
+</div>
+
+<!-- Match Modal -->
+<div class="modal-overlay" id="match-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="match-modal-title">Add Match</h3>
+      <button class="modal-close" onclick="closeModal('match-modal')">✕</button>
+    </div>
+    <input type="hidden" id="mm-id"/>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.8rem">
+      <div class="form-group"><label>Date</label><input type="date" id="mm-date"/></div>
+      <div class="form-group"><label>Time</label><input type="time" id="mm-time"/></div>
+    </div>
+    <div class="form-group"><label>Opponent Team</label><input type="text" id="mm-opponent" placeholder="Thunder United"/></div>
+    <div class="form-group"><label>Venue</label><input type="text" id="mm-venue" placeholder="City Stadium"/></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.8rem">
+      <div class="form-group"><label>Sport</label>
+        <select id="mm-sport"><option>Football</option><option>Cricket</option><option>Basketball</option><option>Volleyball</option><option>Athletics</option><option>Other</option></select>
+      </div>
+      <div class="form-group"><label>Match Type</label>
+        <select id="mm-type"><option>League</option><option>Cup</option><option>Friendly</option><option>Tournament</option></select>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.8rem">
+      <div class="form-group"><label>Our Score</label><input type="number" id="mm-score-us" placeholder="0" min="0"/></div>
+      <div class="form-group"><label>Their Score</label><input type="number" id="mm-score-them" placeholder="0" min="0"/></div>
+      <div class="form-group"><label>Status</label>
+        <select id="mm-status"><option value="upcoming">Upcoming</option><option value="completed">Completed</option></select>
+      </div>
+    </div>
+    <button class="btn btn-primary" style="width:100%" onclick="saveMatch()">Save Match</button>
+    <div class="alert alert-success" id="mm-success" style="margin-top:1rem"></div>
+  </div>
+</div>
+
+<!-- Training Modal -->
+<div class="modal-overlay" id="training-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Add Training Plan</h3>
+      <button class="modal-close" onclick="closeModal('training-modal')">✕</button>
+    </div>
+    <div class="form-group"><label>Title</label><input type="text" id="tr-title" placeholder="Sprint Interval Training"/></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.8rem">
+      <div class="form-group"><label>Category</label>
+        <select id="tr-cat"><option>Speed</option><option>Strength</option><option>Stamina</option><option>Agility</option><option>Recovery</option><option>Diet</option><option>Tactical</option></select>
+      </div>
+      <div class="form-group"><label>Duration</label><input type="text" id="tr-dur" placeholder="45 min"/></div>
+    </div>
+    <div class="form-group"><label>Description</label><textarea id="tr-desc" rows="3" style="width:100%;background:var(--card2);border:1px solid var(--border);border-radius:9px;padding:.75rem 1rem;color:var(--text);font-family:'Sora',sans-serif;outline:none;resize:vertical" placeholder="Describe the training plan..."></textarea></div>
+    <div class="form-group"><label>Tags (comma separated)</label><input type="text" id="tr-tags" placeholder="Speed, Cardio, Outdoor"/></div>
+    <button class="btn btn-primary" style="width:100%" onclick="saveTraining()">Add Plan</button>
+    <div class="alert alert-success" id="tr-success" style="margin-top:1rem"></div>
+  </div>
+</div>
+
+<!-- Announcement Modal -->
+<div class="modal-overlay" id="ann-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Post Announcement</h3>
+      <button class="modal-close" onclick="closeModal('ann-modal')">✕</button>
+    </div>
+    <div class="form-group"><label>Title</label><input type="text" id="an-title" placeholder="Training rescheduled"/></div>
+    <div class="form-group"><label>Message</label><textarea id="an-body" rows="4" style="width:100%;background:var(--card2);border:1px solid var(--border);border-radius:9px;padding:.75rem 1rem;color:var(--text);font-family:'Sora',sans-serif;outline:none;resize:vertical" placeholder="Write your announcement..."></textarea></div>
+    <div class="form-group"><label>Priority</label>
+      <select id="an-priority"><option value="normal">Normal</option><option value="important">Important</option><option value="urgent">Urgent</option></select>
+    </div>
+    <button class="btn btn-primary" style="width:100%" onclick="saveAnn()">Post</button>
+    <div class="alert alert-success" id="an-success" style="margin-top:1rem"></div>
+  </div>
+</div>
+
+<script type="module">
+import { requireAuth, logoutUser } from './auth.js';
+import { getAllPlayers, getAllMatches, getAnnouncements, getLeaderboard,
+         getTrainingPlans, updatePlayer, addMatch, updateMatch, deleteMatch,
+         addAnnouncement, deleteAnnouncement, addTrainingPlan, deleteTrainingPlan,
+         updateUser, getUser, fmtDate, fmtDateTime } from './db.js';
+import { doc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { db } from './firebase-config.js';
+
+let currentUser = null;
+let allPlayers = [], allMatches = [], allAnn = [], allTraining = [];
+let editMatchId = null;
+
+// ── INIT ──
+requireAuth(['coach']).then(async user => {
+  currentUser = user;
+  document.getElementById('coach-name').textContent = user.name;
+  document.getElementById('coach-avatar').textContent = user.name[0].toUpperCase();
+  document.getElementById('today-date').textContent = new Date().toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short',year:'numeric'});
+  loadAll();
+}).catch(() => {});
+
+async function loadAll() {
+  allPlayers  = await getAllPlayers();
+  allMatches  = await getAllMatches();
+  allAnn      = await getAnnouncements();
+  allTraining = await getTrainingPlans();
+  renderDashboard();
+  renderPlayers(allPlayers);
+  renderMatches(allMatches);
+  renderLeaderboard();
+  renderTraining(allTraining);
+  renderAnn(allAnn);
+  populatePlayerSelect();
+  loadProfile();
+}
+
+// ── DASHBOARD ──
+function renderDashboard() {
+  document.getElementById('s-players').textContent = allPlayers.length;
+  document.getElementById('s-matches').textContent = allMatches.length;
+  document.getElementById('s-wins').textContent = allMatches.filter(m=>m.status==='completed'&&m.scoreUs>m.scoreThem).length;
+  document.getElementById('s-ann').textContent = allAnn.length;
+
+  // Recent players
+  const tbody = document.getElementById('dash-players-tbody');
+  tbody.innerHTML = allPlayers.slice(0,5).map(p=>`
+    <tr><td>${p.name}</td><td>${p.sport}</td><td>${p.goals||0}</td>
+    <td><span class="badge ${p.status==='Active'?'badge-green':p.status==='Injured'?'badge-red':'badge-orange'}">${p.status||'Active'}</span></td></tr>
+  `).join('') || `<tr><td colspan="4" style="color:var(--muted);text-align:center">No players yet</td></tr>`;
+
+  // Upcoming matches
+  const upcoming = allMatches.filter(m=>m.status==='upcoming').slice(0,3);
+  document.getElementById('dash-matches-list').innerHTML = upcoming.length ? upcoming.map(m=>`
+    <div class="card-box" style="margin-bottom:.8rem;display:flex;justify-content:space-between;align-items:center">
+      <div><strong style="color:var(--white)">${m.opponent}</strong><div style="font-size:.75rem;color:var(--muted)">${fmtDate(m.date)} · ${m.venue}</div></div>
+      <span class="badge badge-blue">${m.type}</span>
+    </div>
+  `).join('') : `<p class="text-muted">No upcoming matches</p>`;
+
+  // Announcements
+  document.getElementById('dash-ann-list').innerHTML = allAnn.slice(0,2).map(a=>`
+    <div class="card-box" style="margin-bottom:.8rem">
+      <strong style="color:var(--white);font-size:.9rem">${a.title}</strong>
+      <p style="font-size:.8rem;color:var(--muted);margin-top:.3rem">${a.body}</p>
+    </div>
+  `).join('') || `<p class="text-muted">No announcements</p>`;
+}
+
+// ── PLAYERS ──
+function renderPlayers(list) {
+  const tbody = document.getElementById('players-tbody');
+  if (!list.length) { tbody.innerHTML=`<tr><td colspan="10" style="color:var(--muted);text-align:center;padding:2rem">No players found</td></tr>`; return; }
+  tbody.innerHTML = list.map(p=>`
+    <tr>
+      <td><strong>${p.name}</strong></td>
+      <td>${p.sport}</td>
+      <td>${p.position||'—'}</td>
+      <td>${p.jerseyNumber||'—'}</td>
+      <td>${p.matchesPlayed||0}</td>
+      <td>${p.goals||0}</td>
+      <td>${p.assists||0}</td>
+      <td>
+        <div class="prog-track" style="width:80px"><div class="prog-fill" style="width:${p.fitnessScore||0}%;background:linear-gradient(90deg,var(--blue),var(--cyan))"></div></div>
+        <small style="color:var(--muted)">${p.fitnessScore||0}%</small>
+      </td>
+      <td><span class="badge ${p.status==='Active'?'badge-green':p.status==='Injured'?'badge-red':'badge-orange'}">${p.status||'Active'}</span></td>
+      <td>
+        <button class="btn btn-ghost btn-sm" onclick="openPlayerModal('${p.id}')">Edit</button>
+        <button class="btn btn-danger btn-sm" onclick="removePlayer('${p.id}')">Del</button>
+      </td>
+    </tr>
+  `).join('');
+}
+
+window.searchPlayers = (q) => renderPlayers(allPlayers.filter(p=>p.name.toLowerCase().includes(q.toLowerCase())));
+
+function populatePlayerSelect() {
+  const sel = document.getElementById('pm-player-select');
+  sel.innerHTML = '<option value="">— Choose —</option>' + allPlayers.map(p=>`<option value="${p.id}">${p.name} (${p.sport})</option>`).join('');
+}
+
+window.openPlayerModal = (uid=null) => {
+  clearForm(['pm-position','pm-jersey','pm-matches','pm-goals','pm-assists','pm-fitness']);
+  document.getElementById('pm-uid').value = uid||'';
+  if (uid) {
+    document.getElementById('pm-player-select').value = uid;
+    fillPlayerData();
+  }
+  document.getElementById('player-modal').classList.add('open');
+};
+
+window.fillPlayerData = () => {
+  const uid = document.getElementById('pm-player-select').value;
+  const p = allPlayers.find(x=>x.id===uid);
+  if (!p) return;
+  document.getElementById('pm-uid').value = uid;
+  document.getElementById('pm-position').value = p.position||'';
+  document.getElementById('pm-jersey').value   = p.jerseyNumber||'';
+  document.getElementById('pm-matches').value  = p.matchesPlayed||0;
+  document.getElementById('pm-goals').value    = p.goals||0;
+  document.getElementById('pm-assists').value  = p.assists||0;
+  document.getElementById('pm-fitness').value  = p.fitnessScore||0;
+  document.getElementById('pm-status').value   = p.status||'Active';
+};
+
+window.savePlayerStats = async () => {
+  const uid = document.getElementById('pm-uid').value || document.getElementById('pm-player-select').value;
+  if (!uid) return alert('Please select a player.');
+  await updatePlayer(uid, {
+    position: document.getElementById('pm-position').value,
+    jerseyNumber: document.getElementById('pm-jersey').value,
+    matchesPlayed: +document.getElementById('pm-matches').value||0,
+    goals:   +document.getElementById('pm-goals').value||0,
+    assists: +document.getElementById('pm-assists').value||0,
+    fitnessScore: +document.getElementById('pm-fitness').value||0,
+    status: document.getElementById('pm-status').value
+  });
+  showSuccess('pm-success','✅ Stats saved!');
+  allPlayers = await getAllPlayers();
+  renderPlayers(allPlayers); renderDashboard(); renderLeaderboard();
+  setTimeout(()=>closeModal('player-modal'),1200);
+};
+
+window.removePlayer = async (uid) => {
+  if (!confirm('Remove this player from the list?')) return;
+  const {deletePlayer} = await import('./db.js');
+  await deletePlayer(uid);
+  allPlayers = await getAllPlayers();
+  renderPlayers(allPlayers); renderDashboard(); renderLeaderboard(); populatePlayerSelect();
+};
+
+// ── MATCHES ──
+function renderMatches(list) {
+  const tbody = document.getElementById('matches-tbody');
+  if (!list.length) { tbody.innerHTML=`<tr><td colspan="8" style="color:var(--muted);text-align:center;padding:2rem">No matches added yet</td></tr>`; return; }
+  tbody.innerHTML = list.map(m=>{
+    const result = m.status==='completed'
+      ? (m.scoreUs>m.scoreThem?'<span class="badge badge-green">WIN</span>'
+        :m.scoreUs<m.scoreThem?'<span class="badge badge-red">LOSS</span>'
+        :'<span class="badge badge-muted">DRAW</span>') : '—';
+    const score = m.status==='completed' ? `${m.scoreUs||0} – ${m.scoreThem||0}` : '—';
+    return `<tr>
+      <td>${fmtDate(m.date)}</td>
+      <td><strong>${m.opponent}</strong></td>
+      <td>${m.venue}</td>
+      <td>${m.sport}</td>
+      <td><span class="badge badge-blue">${m.type}</span></td>
+      <td><strong>${score}</strong></td>
+      <td>${result}</td>
+      <td>
+        <button class="btn btn-ghost btn-sm" onclick="openMatchModal('${m.id}')">Edit</button>
+        <button class="btn btn-danger btn-sm" onclick="removeMatch('${m.id}')">Del</button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+window.filterMatches = (f, btn) => {
+  btn.parentElement.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  const filtered = f==='all' ? allMatches : allMatches.filter(m=>m.status===f);
+  renderMatches(filtered);
+};
+
+window.openMatchModal = (id=null) => {
+  editMatchId = id;
+  document.getElementById('match-modal-title').textContent = id ? 'Edit Match' : 'Add Match';
+  if (id) {
+    const m = allMatches.find(x=>x.id===id);
+    if (m) {
+      document.getElementById('mm-date').value     = m.date||'';
+      document.getElementById('mm-time').value     = m.time||'';
+      document.getElementById('mm-opponent').value = m.opponent||'';
+      document.getElementById('mm-venue').value    = m.venue||'';
+      document.getElementById('mm-sport').value    = m.sport||'Football';
+      document.getElementById('mm-type').value     = m.type||'League';
+      document.getElementById('mm-score-us').value   = m.scoreUs||0;
+      document.getElementById('mm-score-them').value = m.scoreThem||0;
+      document.getElementById('mm-status').value   = m.status||'upcoming';
+    }
+  } else {
+    clearForm(['mm-date','mm-time','mm-opponent','mm-venue','mm-score-us','mm-score-them']);
+    document.getElementById('mm-status').value = 'upcoming';
+  }
+  document.getElementById('match-modal').classList.add('open');
+};
+
+window.saveMatch = async () => {
+  const data = {
+    date:     document.getElementById('mm-date').value,
+    time:     document.getElementById('mm-time').value,
+    opponent: document.getElementById('mm-opponent').value,
+    venue:    document.getElementById('mm-venue').value,
+    sport:    document.getElementById('mm-sport').value,
+    type:     document.getElementById('mm-type').value,
+    scoreUs:  +document.getElementById('mm-score-us').value||0,
+    scoreThem:+document.getElementById('mm-score-them').value||0,
+    status:   document.getElementById('mm-status').value,
+    coachUid: currentUser.uid
+  };
+  if (!data.date||!data.opponent) return alert('Date and Opponent are required.');
+  if (editMatchId) await updateMatch(editMatchId, data);
+  else await addMatch(data);
+  showSuccess('mm-success','✅ Match saved!');
+  allMatches = await getAllMatches();
+  renderMatches(allMatches); renderDashboard();
+  setTimeout(()=>closeModal('match-modal'),1200);
+};
+
+window.removeMatch = async (id) => {
+  if (!confirm('Delete this match?')) return;
+  await deleteMatch(id);
+  allMatches = await getAllMatches();
+  renderMatches(allMatches); renderDashboard();
+};
+
+// ── LEADERBOARD ──
+function renderLeaderboard() {
+  const sorted = [...allPlayers]
+    .filter(p=>p.matchesPlayed>0)
+    .sort((a,b)=>((b.goals||0)+(b.assists||0))-((a.goals||0)+(a.assists||0)));
+  const medals=['🥇','🥈','🥉'];
+  const tbody = document.getElementById('lb-tbody');
+  if (!sorted.length) { tbody.innerHTML=`<tr><td colspan="8" style="color:var(--muted);text-align:center;padding:2rem">No player data yet</td></tr>`; return; }
+  tbody.innerHTML = sorted.map((p,i)=>`
+    <tr>
+      <td><strong style="font-size:1.1rem">${i<3?medals[i]:i+1}</strong></td>
+      <td><strong>${p.name}</strong></td>
+      <td>${p.sport}</td>
+      <td>${p.matchesPlayed||0}</td>
+      <td>${p.goals||0}</td>
+      <td>${p.assists||0}</td>
+      <td>
+        <div class="prog-track" style="width:80px;display:inline-block"><div class="prog-fill" style="width:${p.fitnessScore||0}%;background:linear-gradient(90deg,var(--blue),var(--cyan))"></div></div>
+        ${p.fitnessScore||0}%
+      </td>
+      <td><strong style="color:var(--cyan)">${(p.goals||0)+(p.assists||0)}</strong></td>
+    </tr>
+  `).join('');
+}
+
+// ── TRAINING ──
+function renderTraining(list) {
+  const cats = {Speed:'var(--cyan)',Strength:'var(--gold)',Stamina:'var(--green)',Agility:'var(--blue)',Recovery:'#69f0ae',Diet:'#e040fb',Tactical:'var(--orange)'};
+  const el = document.getElementById('training-list');
+  if (!list.length) { el.innerHTML=`<p class="text-muted">No training plans yet. Add one!</p>`; return; }
+  el.innerHTML = list.map(t=>`
+    <div class="card-box" style="position:relative">
+      <div style="font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:${cats[t.category]||'var(--cyan)'};margin-bottom:.6rem;font-weight:600">${t.category}</div>
+      <h3 style="color:var(--white);margin-bottom:.5rem;font-size:1rem">${t.title}</h3>
+      <p style="color:var(--muted);font-size:.83rem;line-height:1.7;margin-bottom:.8rem">${t.description}</p>
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <span style="font-size:.75rem;color:var(--muted)">⏱ ${t.duration}</span>
+        <button class="btn btn-danger btn-sm" onclick="removePlan('${t.id}')">Delete</button>
+      </div>
+      ${t.tags?`<div style="display:flex;gap:.4rem;flex-wrap:wrap;margin-top:.8rem">${t.tags.split(',').map(tg=>`<span style="font-size:.68rem;padding:.2rem .55rem;border-radius:20px;background:rgba(41,121,255,.1);color:#82aaff">${tg.trim()}</span>`).join('')}</div>`:''}
+    </div>
+  `).join('');
+}
+
+window.openTrainingModal = () => {
+  clearForm(['tr-title','tr-dur','tr-desc','tr-tags']);
+  document.getElementById('training-modal').classList.add('open');
+};
+window.saveTraining = async () => {
+  const title = document.getElementById('tr-title').value;
+  if (!title) return alert('Title is required.');
+  await addTrainingPlan({
+    title, category: document.getElementById('tr-cat').value,
+    duration: document.getElementById('tr-dur').value,
+    description: document.getElementById('tr-desc').value,
+    tags: document.getElementById('tr-tags').value,
+    coachUid: currentUser.uid
+  });
+  showSuccess('tr-success','✅ Plan added!');
+  allTraining = await getTrainingPlans();
+  renderTraining(allTraining);
+  setTimeout(()=>closeModal('training-modal'),1200);
+};
+window.removePlan = async (id) => {
+  if (!confirm('Delete this training plan?')) return;
+  await deleteTrainingPlan(id);
+  allTraining = await getTrainingPlans();
+  renderTraining(allTraining);
+};
+
+// ── ANNOUNCEMENTS ──
+function renderAnn(list) {
+  const colors={normal:'var(--blue)',important:'var(--gold)',urgent:'var(--red)'};
+  const el = document.getElementById('ann-list');
+  if (!list.length) { el.innerHTML=`<p class="text-muted">No announcements yet.</p>`; return; }
+  el.innerHTML = list.map(a=>`
+    <div class="card-box" style="margin-bottom:1rem;display:flex;gap:1rem;align-items:flex-start">
+      <div style="width:10px;height:10px;border-radius:50%;background:${colors[a.priority]||'var(--blue)'};flex-shrink:0;margin-top:5px"></div>
+      <div style="flex:1">
+        <strong style="color:var(--white)">${a.title}</strong>
+        <p style="font-size:.83rem;color:var(--muted);margin-top:.3rem;line-height:1.6">${a.body}</p>
+        <div style="font-size:.7rem;color:var(--muted);margin-top:.4rem">${fmtDateTime(a.createdAt)} · by ${a.postedBy||'Coach'}</div>
+      </div>
+      <button class="btn btn-danger btn-sm" onclick="removeAnn('${a.id}')">Del</button>
+    </div>
+  `).join('');
+}
+
+window.openAnnModal = () => {
+  clearForm(['an-title','an-body']);
+  document.getElementById('ann-modal').classList.add('open');
+};
+window.saveAnn = async () => {
+  const title = document.getElementById('an-title').value;
+  if (!title) return alert('Title is required.');
+  await addAnnouncement({
+    title, body: document.getElementById('an-body').value,
+    priority: document.getElementById('an-priority').value,
+    postedBy: currentUser.name
+  });
+  showSuccess('an-success','✅ Posted!');
+  allAnn = await getAnnouncements();
+  renderAnn(allAnn); renderDashboard();
+  setTimeout(()=>closeModal('ann-modal'),1200);
+};
+window.removeAnn = async (id) => {
+  if (!confirm('Delete this announcement?')) return;
+  await deleteAnnouncement(id);
+  allAnn = await getAnnouncements();
+  renderAnn(allAnn); renderDashboard();
+};
+
+// ── PROFILE ──
+async function loadProfile() {
+  const u = await getUser(currentUser.uid);
+  if (!u) return;
+  document.getElementById('profile-name').textContent  = u.name;
+  document.getElementById('profile-avatar').textContent= u.name[0].toUpperCase();
+  document.getElementById('p-name').value    = u.name||'';
+  document.getElementById('p-sport').value   = u.sport||u.specialization||'';
+  document.getElementById('p-exp').value     = u.experience||'';
+  document.getElementById('p-team-code').value = u.teamCode||'';
+}
+window.saveProfile = async () => {
+  await updateUser(currentUser.uid, {
+    name:         document.getElementById('p-name').value,
+    specialization: document.getElementById('p-sport').value,
+    experience:   document.getElementById('p-exp').value,
+    teamCode:     document.getElementById('p-team-code').value.toUpperCase()
+  });
+  showSuccess('profile-success','✅ Profile saved!');
+  document.getElementById('coach-name').textContent = document.getElementById('p-name').value;
+};
+
+// ── HELPERS ──
+window.showPage = (id, btn) => {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  const titles={dashboard:'Dashboard',players:'Player Management',matches:'Match Schedule',leaderboard:'Leaderboard',training:'Training Plans',announcements:'Announcements',profile:'My Profile'};
+  document.getElementById('page-title').textContent = titles[id]||id;
+  if (btn) btn.classList.add('active');
+};
+window.closeModal = (id) => document.getElementById(id).classList.remove('open');
+window.handleLogout = () => { import('./auth.js').then(m=>m.logoutUser()); };
+function clearForm(ids) { ids.forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; }); }
+function showSuccess(id, msg) { const el=document.getElementById(id); if(!el)return; el.textContent=msg; el.classList.add('show'); setTimeout(()=>el.classList.remove('show'),3000); }
+</script>
+</body>
+</html>

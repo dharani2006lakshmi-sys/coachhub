@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>CoachHub — Player Dashboard</title>
+<link rel="stylesheet" href="style.css"/>
+</head>
+<body style="display:flex">
+
+<aside class="sidebar">
+  <div class="sidebar-logo"><h1>Coach<span>Hub</span></h1><p>Player Portal</p></div>
+  <nav class="sidebar-nav">
+    <button class="nav-item active" onclick="showPage('dashboard',this)"><span class="icon">🏠</span>My Dashboard</button>
+    <button class="nav-item" onclick="showPage('stats',this)"><span class="icon">📊</span>My Stats</button>
+    <button class="nav-item" onclick="showPage('matches',this)"><span class="icon">⚽</span>Matches</button>
+    <button class="nav-item" onclick="showPage('leaderboard',this)"><span class="icon">🏆</span>Leaderboard</button>
+    <button class="nav-item" onclick="showPage('training',this)"><span class="icon">💪</span>Training Plans</button>
+    <button class="nav-item" onclick="showPage('announcements',this)"><span class="icon">📢</span>Announcements</button>
+    <button class="nav-item" onclick="showPage('profile',this)"><span class="icon">👤</span>My Profile</button>
+  </nav>
+  <div class="sidebar-bottom">
+    <div class="user-badge">
+      <div class="user-avatar" id="player-avatar">P</div>
+      <div class="user-info"><p id="player-name">Player</p><span class="role-badge role-player">Player</span></div>
+    </div>
+    <button class="logout-btn" onclick="handleLogout()">⬅ Logout</button>
+  </div>
+</aside>
+
+<main class="main">
+  <header class="topbar">
+    <h2 id="page-title">My Dashboard</h2>
+    <div class="topbar-right">
+      <div class="date-badge" id="today-date"></div>
+      <span class="role-badge role-player">Player</span>
+    </div>
+  </header>
+
+  <!-- DASHBOARD -->
+  <div class="page active" id="page-dashboard">
+    <div class="stat-row">
+      <div class="stat-card sc-blue"><div class="stat-icon">⚽</div><div class="stat-val" id="s-matches">—</div><div class="stat-label">Matches Played</div></div>
+      <div class="stat-card sc-cyan"><div class="stat-icon">🥅</div><div class="stat-val" id="s-goals">—</div><div class="stat-label">Goals Scored</div></div>
+      <div class="stat-card sc-gold"><div class="stat-icon">🤝</div><div class="stat-val" id="s-assists">—</div><div class="stat-label">Assists</div></div>
+      <div class="stat-card sc-green"><div class="stat-icon">💪</div><div class="stat-val" id="s-fitness">—%</div><div class="stat-label">Fitness Score</div></div>
+    </div>
+    <div class="two-col">
+      <div>
+        <div class="sec-header"><div class="sec-title">Performance Overview</div></div>
+        <div class="card-box">
+          <div class="prog-row"><div class="prog-label"><span>Goals</span><span id="g-goals">0</span></div><div class="prog-track"><div class="prog-fill" id="bar-goals" style="width:0%;background:linear-gradient(90deg,var(--blue),var(--cyan))"></div></div></div>
+          <div class="prog-row"><div class="prog-label"><span>Assists</span><span id="g-assists">0</span></div><div class="prog-track"><div class="prog-fill" id="bar-assists" style="width:0%;background:linear-gradient(90deg,var(--green),#00bcd4)"></div></div></div>
+          <div class="prog-row"><div class="prog-label"><span>Fitness</span><span id="g-fitness">0%</span></div><div class="prog-track"><div class="prog-fill" id="bar-fitness" style="width:0%;background:linear-gradient(90deg,var(--gold),#ff9800)"></div></div></div>
+          <div class="prog-row" style="margin-bottom:0"><div class="prog-label"><span>Matches Played</span><span id="g-matches">0</span></div><div class="prog-track"><div class="prog-fill" id="bar-matches" style="width:0%;background:linear-gradient(90deg,#e040fb,var(--blue))"></div></div></div>
+        </div>
+        <div class="sec-header" style="margin-top:1.5rem"><div class="sec-title">My Info</div></div>
+        <div class="card-box">
+          <table style="width:100%">
+            <tr><td style="color:var(--muted);font-size:.82rem;padding:.4rem 0">Sport</td><td id="info-sport" style="font-size:.88rem">—</td></tr>
+            <tr><td style="color:var(--muted);font-size:.82rem;padding:.4rem 0">Position</td><td id="info-pos" style="font-size:.88rem">—</td></tr>
+            <tr><td style="color:var(--muted);font-size:.82rem;padding:.4rem 0">Jersey #</td><td id="info-jersey" style="font-size:.88rem">—</td></tr>
+            <tr><td style="color:var(--muted);font-size:.82rem;padding:.4rem 0">Status</td><td id="info-status" style="font-size:.88rem">—</td></tr>
+            <tr><td style="color:var(--muted);font-size:.82rem;padding:.4rem 0">Team Code</td><td id="info-team" style="font-size:.88rem">—</td></tr>
+          </table>
+        </div>
+      </div>
+      <div>
+        <div class="sec-header"><div class="sec-title">Upcoming Matches</div></div>
+        <div id="player-matches-list"><p class="text-muted">Loading...</p></div>
+        <div class="sec-header" style="margin-top:1.5rem"><div class="sec-title">Latest Announcements</div></div>
+        <div id="player-ann-list"><p class="text-muted">Loading...</p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div class="page" id="page-stats">
+    <div class="sec-header"><div class="sec-title">My Detailed Stats</div></div>
+    <div style="max-width:600px">
+      <div class="card-box">
+        <div id="detailed-stats"><p class="text-muted">Loading...</p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MATCHES -->
+  <div class="page" id="page-matches">
+    <div class="sec-header"><div class="sec-title">All Matches</div></div>
+    <div class="tabs">
+      <button class="tab active" onclick="filterMatches('all',this)">All</button>
+      <button class="tab" onclick="filterMatches('upcoming',this)">Upcoming</button>
+      <button class="tab" onclick="filterMatches('completed',this)">Results</button>
+    </div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Date</th><th>Opponent</th><th>Venue</th><th>Sport</th><th>Type</th><th>Score</th><th>Result</th></tr></thead>
+      <tbody id="p-matches-tbody"><tr><td colspan="7" style="color:var(--muted);text-align:center;padding:2rem">Loading...</td></tr></tbody>
+    </table></div>
+  </div>
+
+  <!-- LEADERBOARD -->
+  <div class="page" id="page-leaderboard">
+    <div class="sec-header"><div class="sec-title">Player Leaderboard</div></div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Rank</th><th>Player</th><th>Sport</th><th>Goals</th><th>Assists</th><th>Score</th></tr></thead>
+      <tbody id="p-lb-tbody"><tr><td colspan="6" style="color:var(--muted);text-align:center;padding:2rem">Loading...</td></tr></tbody>
+    </table></div>
+  </div>
+
+  <!-- TRAINING -->
+  <div class="page" id="page-training">
+    <div class="sec-header"><div class="sec-title">Training Plans from Coach</div></div>
+    <div id="p-training-list" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.2rem"><p class="text-muted">Loading...</p></div>
+  </div>
+
+  <!-- ANNOUNCEMENTS -->
+  <div class="page" id="page-announcements">
+    <div class="sec-header"><div class="sec-title">Team Announcements</div></div>
+    <div id="p-ann-list"><p class="text-muted">Loading...</p></div>
+  </div>
+
+  <!-- PROFILE -->
+  <div class="page" id="page-profile">
+    <div class="sec-header"><div class="sec-title">My Profile</div></div>
+    <div style="max-width:520px">
+      <div class="card-box">
+        <div style="display:flex;align-items:center;gap:1.2rem;margin-bottom:1.5rem">
+          <div class="user-avatar" style="width:64px;height:64px;font-size:1.6rem" id="profile-avatar">P</div>
+          <div><h3 id="profile-name" style="font-size:1.2rem;color:var(--white)">—</h3><span class="role-badge role-player">Player</span></div>
+        </div>
+        <div class="form-group"><label>Full Name</label><input type="text" id="pp-name" placeholder="Your name"/></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.8rem">
+          <div class="form-group"><label>Age</label><input type="number" id="pp-age" placeholder="22"/></div>
+          <div class="form-group"><label>Height (cm)</label><input type="number" id="pp-height" placeholder="175"/></div>
+          <div class="form-group"><label>Weight (kg)</label><input type="number" id="pp-weight" placeholder="70"/></div>
+          <div class="form-group"><label>Team Code</label><input type="text" id="pp-team" placeholder="STORM2024" style="text-transform:uppercase"/></div>
+        </div>
+        <button class="btn btn-primary" onclick="saveProfile()">Save Changes</button>
+        <div class="alert alert-success" id="pp-success" style="margin-top:1rem"></div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script type="module">
+import { requireAuth, logoutUser } from './auth.js';
+import { getUser, updateUser, getAllMatches, getAnnouncements, getLeaderboard, getTrainingPlans, fmtDate, fmtDateTime } from './db.js';
+
+let me = null, allMatches=[], allAnn=[], allPlayers=[], allTraining=[];
+
+requireAuth(['player']).then(async user => {
+  me = user;
+  document.getElementById('player-name').textContent   = user.name;
+  document.getElementById('player-avatar').textContent = user.name[0].toUpperCase();
+  document.getElementById('today-date').textContent    = new Date().toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short',year:'numeric'});
+  loadAll();
+}).catch(()=>{});
+
+async function loadAll() {
+  const fresh = await getUser(me.uid);
+  me = { ...me, ...fresh };
+  allMatches  = await getAllMatches();
+  allAnn      = await getAnnouncements();
+  allPlayers  = await getLeaderboard();
+  allTraining = await getTrainingPlans();
+  renderDashboard();
+  renderMatchesTable(allMatches);
+  renderLeaderboard();
+  renderTraining();
+  renderAnn();
+  loadProfile();
+}
+
+function renderDashboard() {
+  const s = me;
+  document.getElementById('s-matches').textContent = s.matchesPlayed||0;
+  document.getElementById('s-goals').textContent   = s.goals||0;
+  document.getElementById('s-assists').textContent = s.assists||0;
+  document.getElementById('s-fitness').textContent = (s.fitnessScore||0)+'%';
+  document.getElementById('g-goals').textContent   = s.goals||0;
+  document.getElementById('g-assists').textContent = s.assists||0;
+  document.getElementById('g-fitness').textContent = (s.fitnessScore||0)+'%';
+  document.getElementById('g-matches').textContent = s.matchesPlayed||0;
+  document.getElementById('bar-goals').style.width   = Math.min((s.goals||0)*10,100)+'%';
+  document.getElementById('bar-assists').style.width = Math.min((s.assists||0)*10,100)+'%';
+  document.getElementById('bar-fitness').style.width = (s.fitnessScore||0)+'%';
+  document.getElementById('bar-matches').style.width = Math.min((s.matchesPlayed||0)*8,100)+'%';
+
+  document.getElementById('info-sport').textContent  = s.sport||'—';
+  document.getElementById('info-pos').textContent    = s.position||'—';
+  document.getElementById('info-jersey').textContent = s.jerseyNumber||'—';
+  document.getElementById('info-status').innerHTML   = `<span class="badge ${s.status==='Active'?'badge-green':s.status==='Injured'?'badge-red':'badge-orange'}">${s.status||'Active'}</span>`;
+  document.getElementById('info-team').textContent   = s.teamCode||'—';
+
+  document.getElementById('detailed-stats').innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem">
+      ${[['Matches Played',s.matchesPlayed||0],['Goals',s.goals||0],['Assists',s.assists||0],['Fitness Score',(s.fitnessScore||0)+'%'],['Position',s.position||'—'],['Jersey',s.jerseyNumber||'—']].map(([l,v])=>`
+        <div><div style="font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.3rem">${l}</div>
+        <div style="font-family:'Rajdhani',sans-serif;font-size:2rem;font-weight:700;color:var(--cyan)">${v}</div></div>`).join('')}
+    </div>`;
+
+  const up = allMatches.filter(m=>m.status==='upcoming').slice(0,3);
+  document.getElementById('player-matches-list').innerHTML = up.length ? up.map(m=>`
+    <div class="card-box" style="margin-bottom:.8rem;display:flex;justify-content:space-between;align-items:center">
+      <div><strong style="color:var(--white)">${m.opponent}</strong><div style="font-size:.75rem;color:var(--muted)">${fmtDate(m.date)} · ${m.venue}</div></div>
+      <span class="badge badge-blue">${m.sport}</span>
+    </div>`).join('') : `<p class="text-muted">No upcoming matches</p>`;
+
+  document.getElementById('player-ann-list').innerHTML = allAnn.slice(0,3).map(a=>`
+    <div class="card-box" style="margin-bottom:.8rem">
+      <strong style="color:var(--white);font-size:.9rem">${a.title}</strong>
+      <p style="font-size:.8rem;color:var(--muted);margin-top:.3rem">${a.body}</p>
+    </div>`).join('') || `<p class="text-muted">No announcements</p>`;
+}
+
+function renderMatchesTable(list) {
+  const tbody = document.getElementById('p-matches-tbody');
+  if (!list.length) { tbody.innerHTML=`<tr><td colspan="7" style="color:var(--muted);text-align:center;padding:2rem">No matches yet</td></tr>`; return; }
+  tbody.innerHTML = list.map(m=>{
+    const result = m.status==='completed'
+      ? (m.scoreUs>m.scoreThem?'<span class="badge badge-green">WIN</span>'
+        :m.scoreUs<m.scoreThem?'<span class="badge badge-red">LOSS</span>'
+        :'<span class="badge badge-muted">DRAW</span>') : '—';
+    return `<tr>
+      <td>${fmtDate(m.date)}</td><td><strong>${m.opponent}</strong></td>
+      <td>${m.venue}</td><td>${m.sport}</td>
+      <td><span class="badge badge-blue">${m.type}</span></td>
+      <td>${m.status==='completed'?`${m.scoreUs||0} – ${m.scoreThem||0}`:'—'}</td>
+      <td>${result}</td></tr>`;
+  }).join('');
+}
+
+window.filterMatches = (f,btn) => {
+  btn.parentElement.querySelectorAll('.tab').forEach(t=>t.classList.remove('active')); btn.classList.add('active');
+  renderMatchesTable(f==='all'?allMatches:allMatches.filter(m=>m.status===f));
+};
+
+function renderLeaderboard() {
+  const medals=['🥇','🥈','🥉'];
+  const tbody = document.getElementById('p-lb-tbody');
+  if (!allPlayers.length) { tbody.innerHTML=`<tr><td colspan="6" style="color:var(--muted);text-align:center;padding:2rem">No data yet</td></tr>`; return; }
+  tbody.innerHTML = allPlayers.map((p,i)=>`
+    <tr style="${p.id===me.uid?'background:rgba(41,121,255,.08)':''}">
+      <td><strong>${i<3?medals[i]:i+1}</strong></td>
+      <td><strong>${p.name}${p.id===me.uid?' 👈':''}</strong></td>
+      <td>${p.sport}</td><td>${p.goals||0}</td><td>${p.assists||0}</td>
+      <td><strong style="color:var(--cyan)">${(p.goals||0)+(p.assists||0)}</strong></td>
+    </tr>`).join('');
+}
+
+function renderTraining() {
+  const cats={Speed:'var(--cyan)',Strength:'var(--gold)',Stamina:'var(--green)',Agility:'var(--blue)',Recovery:'#69f0ae',Diet:'#e040fb',Tactical:'var(--orange)'};
+  const el=document.getElementById('p-training-list');
+  if(!allTraining.length){el.innerHTML=`<p class="text-muted">No training plans added by coach yet.</p>`;return;}
+  el.innerHTML=allTraining.map(t=>`
+    <div class="card-box">
+      <div style="font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:${cats[t.category]||'var(--cyan)'};margin-bottom:.6rem;font-weight:600">${t.category}</div>
+      <h3 style="color:var(--white);margin-bottom:.5rem;font-size:1rem">${t.title}</h3>
+      <p style="color:var(--muted);font-size:.83rem;line-height:1.7;margin-bottom:.8rem">${t.description}</p>
+      <span style="font-size:.75rem;color:var(--muted)">⏱ ${t.duration}</span>
+    </div>`).join('');
+}
+
+function renderAnn() {
+  const colors={normal:'var(--blue)',important:'var(--gold)',urgent:'var(--red)'};
+  const el=document.getElementById('p-ann-list');
+  if(!allAnn.length){el.innerHTML=`<p class="text-muted">No announcements yet.</p>`;return;}
+  el.innerHTML=allAnn.map(a=>`
+    <div class="card-box" style="margin-bottom:1rem;display:flex;gap:1rem;align-items:flex-start">
+      <div style="width:10px;height:10px;border-radius:50%;background:${colors[a.priority]||'var(--blue)'};flex-shrink:0;margin-top:5px"></div>
+      <div><strong style="color:var(--white)">${a.title}</strong>
+      <p style="font-size:.83rem;color:var(--muted);margin-top:.3rem;line-height:1.6">${a.body}</p>
+      <div style="font-size:.7rem;color:var(--muted);margin-top:.4rem">${fmtDateTime(a.createdAt)}</div></div>
+    </div>`).join('');
+}
+
+function loadProfile() {
+  document.getElementById('profile-name').textContent   = me.name;
+  document.getElementById('profile-avatar').textContent = me.name[0].toUpperCase();
+  document.getElementById('pp-name').value   = me.name||'';
+  document.getElementById('pp-age').value    = me.age||'';
+  document.getElementById('pp-height').value = me.height||'';
+  document.getElementById('pp-weight').value = me.weight||'';
+  document.getElementById('pp-team').value   = me.teamCode||'';
+}
+
+window.saveProfile = async () => {
+  await updateUser(me.uid, {
+    name:me.name,age:document.getElementById('pp-age').value,
+    height:document.getElementById('pp-height').value,
+    weight:document.getElementById('pp-weight').value,
+    teamCode:document.getElementById('pp-team').value.toUpperCase()
+  });
+  const s=document.getElementById('pp-success');s.textContent='✅ Saved!';s.classList.add('show');
+  setTimeout(()=>s.classList.remove('show'),3000);
+};
+
+window.showPage = (id,btn) => {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  const titles={dashboard:'My Dashboard',stats:'My Stats',matches:'Matches',leaderboard:'Leaderboard',training:'Training Plans',announcements:'Announcements',profile:'My Profile'};
+  document.getElementById('page-title').textContent=titles[id]||id;
+  if(btn)btn.classList.add('active');
+};
+window.handleLogout = () => { import('./auth.js').then(m=>m.logoutUser()); };
+</script>
+</body>
+</html>
