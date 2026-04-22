@@ -1,5 +1,6 @@
 // ============================================================
 //  db.js — Firestore CRUD helpers
+//  + SQLite mirror calls (parallel SQL layer)
 // ============================================================
 import { db } from './firebase-config.js';
 import {
@@ -7,13 +8,22 @@ import {
   addDoc, setDoc, updateDoc, deleteDoc,
   query, where, orderBy, serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { initSQL, sqlUpsertUser, sqlUpsertPlayer, sqlUpsertMatch }
+  from './sql-layer.js';
+
+// Ensure SQL is ready (no-op if already initialised)
+initSQL().catch(e => console.warn('[SQL] init skipped:', e.message));
 
 // ── USERS ──────────────────────────────────────────────────
 export const getUser = (uid) =>
   getDoc(doc(db, 'users', uid)).then(s => s.exists() ? s.data() : null);
 
-export const updateUser = (uid, data) =>
-  updateDoc(doc(db, 'users', uid), { ...data, updatedAt: serverTimestamp() });
+export async function updateUser(uid, data) {
+  await updateDoc(doc(db, 'users', uid), { ...data, updatedAt: serverTimestamp() });
+  // SQL mirror
+  const snap = await getDoc(doc(db, 'users', uid));
+  if (snap.exists()) sqlUpsertUser({ uid, ...snap.data() });
+}
 
 // ── PLAYERS ───────────────────────────────────────────────
 export const getPlayer = (uid) =>
@@ -25,17 +35,18 @@ export const getAllPlayers = async () => {
 };
 
 export const getPlayersByTeam = async (teamCode) => {
-  const q = query(collection(db, 'players'), where('teamCode', '==', teamCode));
+  const q    = query(collection(db, 'players'), where('teamCode', '==', teamCode));
   const snap = await getDocs(q);
   return snap.docs.map(d => ({ id: d.id, ...d.data() }));
 };
 
-export const updatePlayer = async (uid, data) => {
+export async function updatePlayer(uid, data) {
   const update = { ...data, updatedAt: serverTimestamp() };
-  // Keep both collections in sync so the player dashboard always shows current stats
   await updateDoc(doc(db, 'players', uid), update);
-  await updateDoc(doc(db, 'users', uid), update);
-};
+  await updateDoc(doc(db, 'users',   uid), update);
+  // SQL mirror
+  sqlUpsertPlayer({ uid, ...data });
+}
 
 export const deletePlayer = (uid) => deleteDoc(doc(db, 'players', uid));
 
@@ -47,22 +58,27 @@ export const getAllCoaches = async () => {
 
 // ── MATCHES ───────────────────────────────────────────────
 export const getAllMatches = async () => {
-  const q = query(collection(db, 'matches'), orderBy('date', 'asc'));
+  const q    = query(collection(db, 'matches'), orderBy('date', 'asc'));
   const snap = await getDocs(q);
   return snap.docs.map(d => ({ id: d.id, ...d.data() }));
 };
 
-export const addMatch = (data) =>
-  addDoc(collection(db, 'matches'), { ...data, createdAt: serverTimestamp() });
+export async function addMatch(data) {
+  const ref = await addDoc(collection(db, 'matches'), { ...data, createdAt: serverTimestamp() });
+  sqlUpsertMatch(ref.id, data);
+  return ref;
+}
 
-export const updateMatch = (id, data) =>
-  updateDoc(doc(db, 'matches', id), { ...data, updatedAt: serverTimestamp() });
+export async function updateMatch(id, data) {
+  await updateDoc(doc(db, 'matches', id), { ...data, updatedAt: serverTimestamp() });
+  sqlUpsertMatch(id, data);
+}
 
 export const deleteMatch = (id) => deleteDoc(doc(db, 'matches', id));
 
 // ── ANNOUNCEMENTS ─────────────────────────────────────────
 export const getAnnouncements = async () => {
-  const q = query(collection(db, 'announcements'), orderBy('createdAt', 'desc'));
+  const q    = query(collection(db, 'announcements'), orderBy('createdAt', 'desc'));
   const snap = await getDocs(q);
   return snap.docs.map(d => ({ id: d.id, ...d.data() }));
 };
@@ -75,7 +91,7 @@ export const deleteAnnouncement = (id) =>
 
 // ── TRAINING PLANS ────────────────────────────────────────
 export const getTrainingPlans = async () => {
-  const q = query(collection(db, 'training'), orderBy('createdAt', 'desc'));
+  const q    = query(collection(db, 'training'), orderBy('createdAt', 'desc'));
   const snap = await getDocs(q);
   return snap.docs.map(d => ({ id: d.id, ...d.data() }));
 };
@@ -88,7 +104,7 @@ export const deleteTrainingPlan = (id) =>
 
 // ── LEADERBOARD ───────────────────────────────────────────
 export const getLeaderboard = async () => {
-  const snap = await getDocs(collection(db, 'players'));
+  const snap    = await getDocs(collection(db, 'players'));
   const players = snap.docs.map(d => ({ id: d.id, ...d.data() }));
   return players
     .filter(p => p.matchesPlayed > 0)

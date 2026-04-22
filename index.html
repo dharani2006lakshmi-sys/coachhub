@@ -52,52 +52,33 @@ body{
   background:radial-gradient(circle,rgba(41,121,255,.12),transparent 70%);
   pointer-events:none;
 }
-.brand h1{
-  font-family:'Rajdhani',sans-serif; font-size:2.4rem; font-weight:700;
-  color:var(--white); letter-spacing:.06em;
-}
+.brand h1{font-family:'Rajdhani',sans-serif;font-size:2.4rem;font-weight:700;color:var(--white);letter-spacing:.06em;}
 .brand h1 span{color:var(--blue);}
 .brand p{font-size:.8rem;color:var(--muted);margin-top:.3rem;letter-spacing:.1em;text-transform:uppercase;}
-.features{margin-top:2rem; display:flex; flex-direction:column; gap:1rem;}
+.features{margin-top:2rem;display:flex;flex-direction:column;gap:1rem;}
 .feature{display:flex;align-items:center;gap:1rem;}
-.feat-icon{
-  width:40px;height:40px;border-radius:10px;
-  display:grid;place-items:center;font-size:1.1rem;flex-shrink:0;
-}
+.feat-icon{width:40px;height:40px;border-radius:10px;display:grid;place-items:center;font-size:1.1rem;flex-shrink:0;}
 .feature h3{font-size:.9rem;font-weight:600;color:var(--text);}
 .feature p{font-size:.75rem;color:var(--muted);margin-top:.1rem;}
 .roles-info{margin-top:2rem;}
 .roles-info p{font-size:.7rem;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.7rem;}
 .role-chips{display:flex;gap:.5rem;flex-wrap:wrap;}
-.role-chip{
-  font-size:.72rem;font-weight:600;padding:.3rem .8rem;
-  border-radius:20px;border:1px solid;
-}
+.role-chip{font-size:.72rem;font-weight:600;padding:.3rem .8rem;border-radius:20px;border:1px solid;}
 .rc-coach{border-color:rgba(41,121,255,.4);color:#82aaff;background:rgba(41,121,255,.1);}
 .rc-player{border-color:rgba(0,230,118,.4);color:var(--green);background:rgba(0,230,118,.08);}
 .rc-manager{border-color:rgba(255,214,0,.4);color:var(--gold);background:rgba(255,214,0,.08);}
 
 /* RIGHT PANEL */
-.right-panel{
-  width:420px; background:var(--surface);
-  padding:2.5rem; display:flex; flex-direction:column; justify-content:center;
-}
+.right-panel{width:420px;background:var(--surface);padding:2.5rem;display:flex;flex-direction:column;justify-content:center;}
 .panel-tabs{display:flex;gap:.5rem;margin-bottom:2rem;background:var(--card);border-radius:10px;padding:.3rem;}
-.ptab{
-  flex:1;padding:.55rem;border-radius:7px;border:none;background:none;
-  font-family:'Sora',sans-serif;font-size:.85rem;font-weight:600;
-  color:var(--muted);cursor:pointer;transition:all .2s;
-}
+.ptab{flex:1;padding:.55rem;border-radius:7px;border:none;background:none;font-family:'Sora',sans-serif;font-size:.85rem;font-weight:600;color:var(--muted);cursor:pointer;transition:all .2s;}
 .ptab.active{background:var(--blue);color:#fff;}
 
 .form-section{animation:fadeIn .25s ease;}
 .form-section.hidden{display:none;}
 @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 
-h2.form-title{
-  font-family:'Rajdhani',sans-serif;font-size:1.6rem;font-weight:700;
-  color:var(--white);margin-bottom:.4rem;letter-spacing:.04em;
-}
+h2.form-title{font-family:'Rajdhani',sans-serif;font-size:1.6rem;font-weight:700;color:var(--white);margin-bottom:.4rem;letter-spacing:.04em;}
 p.form-sub{font-size:.8rem;color:var(--muted);margin-bottom:1.5rem;}
 
 .form-group{margin-bottom:1rem;}
@@ -122,6 +103,20 @@ p.form-sub{font-size:.8rem;color:var(--muted);margin-bottom:1.5rem;}
 .btn-submit:hover{background:#1565c0;transform:translateY(-1px);}
 .btn-submit:disabled{opacity:.6;cursor:not-allowed;transform:none;}
 
+/* Biometric button */
+.btn-biometric{
+  width:100%;padding:.78rem;border-radius:10px;font-size:.88rem;font-weight:600;
+  font-family:'Sora',sans-serif;cursor:pointer;margin-top:0;
+  background:linear-gradient(135deg,#0e1a2e,#131f35);
+  color:var(--cyan);border:1.5px solid rgba(0,229,255,.35);
+  display:flex;align-items:center;justify-content:center;gap:.7rem;
+  transition:all .2s;
+}
+.btn-biometric:hover{border-color:var(--cyan);box-shadow:0 0 16px rgba(0,229,255,.15);transform:translateY(-1px);}
+.btn-biometric:disabled{opacity:.4;cursor:not-allowed;transform:none;}
+.btn-biometric.hidden{display:none;}
+.biometric-icon{font-size:1.1rem;}
+
 .alert{padding:.8rem 1rem;border-radius:9px;font-size:.82rem;margin-bottom:1rem;display:none;}
 .alert.show{display:block;}
 .alert-error{background:rgba(255,82,82,.1);border:1px solid rgba(255,82,82,.3);color:var(--red);}
@@ -143,6 +138,32 @@ p.form-sub{font-size:.8rem;color:var(--muted);margin-bottom:1.5rem;}
 .btn-google:hover{background:#f8f9fa;box-shadow:0 2px 8px rgba(0,0,0,.2);}
 .btn-google:disabled{opacity:.6;cursor:not-allowed;}
 .google-icon{width:18px;height:18px;flex-shrink:0;}
+
+/* Modal base */
+.modal-overlay{
+  display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);
+  z-index:999;place-items:center;backdrop-filter:blur(6px);
+}
+.modal-box{
+  background:#0e1420;border:1px solid #1c2840;border-radius:20px;
+  padding:2rem;width:90%;max-width:400px;animation:fadeIn .25s ease;
+  text-align:center;
+}
+.modal-box h3{font-family:'Rajdhani',sans-serif;font-size:1.4rem;color:#fff;margin-bottom:.4rem;}
+.modal-box p{font-size:.82rem;color:#556a8a;margin-bottom:1.2rem;line-height:1.5;}
+.modal-icon{font-size:2.5rem;margin-bottom:.75rem;display:block;}
+.modal-actions{display:flex;flex-direction:column;gap:.6rem;}
+.btn-modal-primary{
+  padding:.85rem;background:var(--cyan);color:#000;
+  border:none;border-radius:10px;font-size:.9rem;font-weight:700;
+  font-family:'Sora',sans-serif;cursor:pointer;transition:all .2s;
+}
+.btn-modal-primary:hover{background:#00cfeb;transform:translateY(-1px);}
+.btn-modal-skip{
+  padding:.65rem;background:transparent;border:1px solid #1c2840;
+  border-radius:8px;color:#556a8a;font-family:'Sora',sans-serif;
+  font-size:.8rem;cursor:pointer;
+}
 
 @media(max-width:750px){
   .left-panel{display:none;}
@@ -204,6 +225,14 @@ p.form-sub{font-size:.8rem;color:var(--muted);margin-bottom:1.5rem;}
       <h2 class="form-title">Welcome back 👋</h2>
       <p class="form-sub">Sign in to your SportsPMS account</p>
       <div class="alert alert-error" id="login-error"></div>
+
+      <!-- Biometric button (shown only when supported) -->
+      <button class="btn-biometric hidden" id="biometric-btn" onclick="handleBiometricLogin()">
+        <span class="biometric-icon">🔐</span>
+        Login with Biometric
+      </button>
+      <div class="divider-or" id="biometric-divider" style="display:none">or</div>
+
       <div class="form-group">
         <label>Email Address</label>
         <input type="email" id="login-email" placeholder="coach@example.com"/>
@@ -274,30 +303,59 @@ p.form-sub{font-size:.8rem;color:var(--muted);margin-bottom:1.5rem;}
   </div>
 </div>
 
-<!-- Google Role Selection Modal -->
-<div id="google-role-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:999;place-items:center;backdrop-filter:blur(4px);">
-  <div style="background:#0e1420;border:1px solid #1c2840;border-radius:20px;padding:2rem;width:90%;max-width:400px;animation:fadeIn .25s ease">
-    <div style="text-align:center;margin-bottom:1.5rem">
-      <div style="font-size:2rem;margin-bottom:.5rem">👋</div>
-      <h3 style="font-family:'Rajdhani',sans-serif;font-size:1.4rem;color:#fff;margin-bottom:.3rem">Welcome to SportsPMS!</h3>
-      <p id="google-user-name" style="font-size:.82rem;color:#556a8a">Signed in with Google</p>
-      <p style="font-size:.82rem;color:#556a8a;margin-top:.3rem">Please select your role to complete registration:</p>
-    </div>
+<!-- ── Google Role Selection Modal ── -->
+<div id="google-role-modal" class="modal-overlay">
+  <div class="modal-box">
+    <span class="modal-icon">👋</span>
+    <h3>Welcome to SportsPMS!</h3>
+    <p id="google-user-name">Signed in with Google</p>
+    <p style="color:#556a8a;font-size:.82rem">Please select your role to complete registration:</p>
+    <br/>
     <div style="display:flex;flex-direction:column;gap:.75rem;margin-bottom:1.5rem">
-      <button onclick="completeGoogleReg('coach')" style="padding:1rem;background:#121929;border:1px solid #1c2840;border-radius:10px;color:#dce6f5;font-family:'Sora',sans-serif;font-size:.9rem;font-weight:600;cursor:pointer;text-align:left;display:flex;align-items:center;gap:.75rem;transition:border-color .2s" onmouseover="this.style.borderColor='#2979ff'" onmouseout="this.style.borderColor='#1c2840'">
+      <button onclick="completeGoogleReg('coach')" class="role-select-btn" style="padding:1rem;background:#121929;border:1px solid #1c2840;border-radius:10px;color:#dce6f5;font-family:'Sora',sans-serif;font-size:.9rem;font-weight:600;cursor:pointer;text-align:left;display:flex;align-items:center;gap:.75rem">
         <span style="font-size:1.3rem">🏋️</span>
         <div><div>Coach</div><div style="font-size:.72rem;color:#556a8a;font-weight:400">Manage players, matches & training</div></div>
       </button>
-      <button onclick="completeGoogleReg('player')" style="padding:1rem;background:#121929;border:1px solid #1c2840;border-radius:10px;color:#dce6f5;font-family:'Sora',sans-serif;font-size:.9rem;font-weight:600;cursor:pointer;text-align:left;display:flex;align-items:center;gap:.75rem;transition:border-color .2s" onmouseover="this.style.borderColor='#00e676'" onmouseout="this.style.borderColor='#1c2840'">
+      <button onclick="completeGoogleReg('player')" class="role-select-btn" style="padding:1rem;background:#121929;border:1px solid #1c2840;border-radius:10px;color:#dce6f5;font-family:'Sora',sans-serif;font-size:.9rem;font-weight:600;cursor:pointer;text-align:left;display:flex;align-items:center;gap:.75rem">
         <span style="font-size:1.3rem">🏃</span>
         <div><div>Player</div><div style="font-size:.72rem;color:#556a8a;font-weight:400">View stats, matches & leaderboard</div></div>
       </button>
-      <button onclick="completeGoogleReg('manager')" style="padding:1rem;background:#121929;border:1px solid #1c2840;border-radius:10px;color:#dce6f5;font-family:'Sora',sans-serif;font-size:.9rem;font-weight:600;cursor:pointer;text-align:left;display:flex;align-items:center;gap:.75rem;transition:border-color .2s" onmouseover="this.style.borderColor='#ffd600'" onmouseout="this.style.borderColor='#1c2840'">
+      <button onclick="completeGoogleReg('manager')" class="role-select-btn" style="padding:1rem;background:#121929;border:1px solid #1c2840;border-radius:10px;color:#dce6f5;font-family:'Sora',sans-serif;font-size:.9rem;font-weight:600;cursor:pointer;text-align:left;display:flex;align-items:center;gap:.75rem">
         <span style="font-size:1.3rem">📊</span>
         <div><div>Team Manager</div><div style="font-size:.72rem;color:#556a8a;font-weight:400">Overview of team performance & reports</div></div>
       </button>
     </div>
     <button onclick="cancelGoogleReg()" style="width:100%;padding:.6rem;background:transparent;border:1px solid #1c2840;border-radius:8px;color:#556a8a;font-family:'Sora',sans-serif;font-size:.8rem;cursor:pointer">Cancel</button>
+  </div>
+</div>
+
+<!-- ── Biometric Setup Modal (shown after login / registration) ── -->
+<div id="biometric-setup-modal" class="modal-overlay">
+  <div class="modal-box">
+    <span class="modal-icon">🔐</span>
+    <h3 id="bio-modal-title">Set Up Biometric Login</h3>
+    <p id="bio-modal-desc">Speed up future logins with your fingerprint or face ID. Your biometric data never leaves your device — only a secure credential ID is saved.</p>
+    <div class="modal-actions">
+      <button class="btn-modal-primary" id="bio-modal-setup-btn" onclick="doBiometricSetup()">
+        Enable Biometric Login
+      </button>
+      <button class="btn-modal-skip" onclick="skipBiometricSetup()">Skip for now</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── New Device Modal ── -->
+<div id="biometric-newdevice-modal" class="modal-overlay">
+  <div class="modal-box">
+    <span class="modal-icon">📱</span>
+    <h3>New Device Detected</h3>
+    <p>You've used biometric login before, but this appears to be a new device. Register your biometric here so you can use it on this device too.</p>
+    <div class="modal-actions">
+      <button class="btn-modal-primary" id="bio-newdevice-btn" onclick="doNewDeviceBiometric()">
+        Register Biometric on This Device
+      </button>
+      <button class="btn-modal-skip" onclick="skipNewDevice()">Skip</button>
+    </div>
   </div>
 </div>
 
@@ -307,10 +365,32 @@ function cancelGoogleReg(){if(window._cancelGoogleReg)window._cancelGoogleReg();
 </script>
 
 <script type="module">
-import { loginUser, registerUser, redirectToDashboard } from './auth.js';
-import { onAuthStateChanged, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { loginUser, registerUser, redirectToDashboard, loginWithBiometricResult }
+  from './auth.js';
+import { onAuthStateChanged, GoogleAuthProvider, signInWithPopup }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 import { auth, db } from './firebase-config.js';
-import { doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { doc, getDoc, setDoc, serverTimestamp }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import {
+  isBiometricSupported, isPlatformAuthenticatorAvailable,
+  registerBiometric, authenticateWithBiometric,
+  getStoredCredentialIds, isCurrentDeviceRegistered
+} from './webauthn.js';
+
+// ── State ─────────────────────────────────────────────────
+let _pendingUid      = null;   // UID waiting for biometric setup
+let _pendingUserData = null;   // full user doc for pending redirect
+let _biometricAvail  = false;
+
+// ── Boot ─────────────────────────────────────────────────
+(async () => {
+  _biometricAvail = await isPlatformAuthenticatorAvailable();
+  if (_biometricAvail) {
+    document.getElementById('biometric-btn').classList.remove('hidden');
+    document.getElementById('biometric-divider').style.display = 'flex';
+  }
+})();
 
 // If already logged in, redirect
 onAuthStateChanged(auth, (user) => {
@@ -320,6 +400,7 @@ onAuthStateChanged(auth, (user) => {
   }
 });
 
+// ── Helpers ───────────────────────────────────────────────
 function showError(id, msg) {
   const el = document.getElementById(id);
   el.textContent = msg; el.classList.add('show');
@@ -329,10 +410,12 @@ function showSuccess(id, msg) {
   const el = document.getElementById(id);
   el.textContent = msg; el.classList.add('show');
 }
-function setLoading(btnId, loading) {
+function setLoading(btnId, loading, label) {
   const btn = document.getElementById(btnId);
   btn.disabled = loading;
-  btn.innerHTML = loading ? '<span class="spinner"></span>Please wait...' : btn.dataset.label;
+  btn.innerHTML = loading
+    ? '<span class="spinner"></span>Please wait...'
+    : (label || btn.dataset.label || btn.textContent);
 }
 
 window.switchTab = (tab) => {
@@ -347,38 +430,102 @@ window.toggleTeamCode = () => {
   document.getElementById('team-code-group').style.display = role === 'player' ? 'block' : 'none';
 };
 
+// ── Biometric login ───────────────────────────────────────
+window.handleBiometricLogin = async () => {
+  const btn = document.getElementById('biometric-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner" style="border-top-color:#00e5ff"></span> Verifying...';
+
+  try {
+    // We don't know the user yet; use empty allowCredentials so the
+    // device shows a resident-key picker (works on Face/Touch ID, Windows Hello)
+    const credId = await authenticateWithBiometric([]);
+
+    // Find which user this credential belongs to by scanning users with that cred
+    // (In production use a server-side lookup; here we search Firestore)
+    const { getDocs, collection, where, query } =
+      await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
+
+    // Fetch the stored credential IDs for users (workaround: stored in array)
+    // We look for users whose biometricCredentials array contains this credId
+    const allUsersSnap = await getDocs(collection(db, 'users'));
+    let matchedUser = null;
+    allUsersSnap.forEach(docSnap => {
+      const d = docSnap.data();
+      const creds = d.biometricCredentials || [];
+      if (creds.some(c => c.credentialId === credId)) {
+        matchedUser = { uid: docSnap.id, ...d };
+      }
+    });
+
+    if (!matchedUser) {
+      throw new Error('No account linked to this biometric. Please log in with email/password first.');
+    }
+
+    await loginWithBiometricResult(matchedUser.uid, matchedUser);
+    redirectToDashboard(matchedUser.role);
+  } catch (e) {
+    btn.disabled = false;
+    btn.innerHTML = '<span class="biometric-icon">🔐</span> Login with Biometric';
+    if (e.name !== 'NotAllowedError') {
+      showError('login-error', e.message || 'Biometric login failed. Try email/password.');
+    }
+  }
+};
+
+// ── Email/password login ──────────────────────────────────
+window.handleLogin = async () => {
+  const email = document.getElementById('login-email').value.trim();
+  const pass  = document.getElementById('login-pass').value;
+  if (!email || !pass) return showError('login-error', 'Please fill in all fields.');
+  document.getElementById('login-btn').dataset.label = 'Sign In';
+  setLoading('login-btn', true);
+  try {
+    const user = await loginUser(email, pass);
+    await _postLoginBiometricCheck(user.uid, user);
+  } catch(e) {
+    setLoading('login-btn', false, 'Sign In');
+    showError('login-error', e.code === 'auth/invalid-credential'
+      ? 'Invalid email or password.' : e.message);
+  }
+};
+
+// ── Google login ──────────────────────────────────────────
 window.handleGoogleLogin = async () => {
   const btn = document.getElementById('google-login-btn');
+  const googleSVG = `<svg class="google-icon" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg> Continue with Google`;
   btn.disabled = true;
   btn.innerHTML = '<span class="spinner" style="border-top-color:#4285F4"></span> Signing in...';
   try {
     const provider = new GoogleAuthProvider();
-    const result = await signInWithPopup(auth, provider);
-    const uid  = result.user.uid;
-    const snap = await getDoc(doc(db, 'users', uid));
+    const result   = await signInWithPopup(auth, provider);
+    const uid      = result.user.uid;
+    const snap     = await getDoc(doc(db, 'users', uid));
     if (snap.exists()) {
-      // Existing registered user — redirect to their dashboard
       const data = snap.data();
       sessionStorage.setItem('ch_uid',  uid);
       sessionStorage.setItem('ch_role', data.role);
       sessionStorage.setItem('ch_name', data.name);
-      redirectToDashboard(data.role);
+      // Log Google login in SQL
+      const { sqlLogAuth, initSQL } = await import('./sql-layer.js');
+      await initSQL();
+      sqlLogAuth(uid, data.email || '', 'google', 'login');
+      await _postLoginBiometricCheck(uid, data);
     } else {
-      // New Google user — show role selection modal
-      const name = result.user.displayName || 'User';
+      // New Google user — role selection
+      const name  = result.user.displayName || 'User';
       const email = result.user.email;
       document.getElementById('google-user-name').textContent = name + ' · ' + email;
-      const modal = document.getElementById('google-role-modal');
-      modal.style.display = 'grid';
+      document.getElementById('google-role-modal').style.display = 'grid';
       btn.disabled = false;
-      btn.innerHTML = `<svg class="google-icon" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg> Continue with Google`;
+      btn.innerHTML = googleSVG;
 
-      // Handle role selection
       window._completeGoogleReg = async (role) => {
-        modal.style.display = 'none';
+        document.getElementById('google-role-modal').style.display = 'none';
         const profileData = {
           uid, name, email, role,
           createdAt: serverTimestamp(),
+          biometricCredentials: [],
           ...(role === 'coach'   ? { specialization: '', experience: '', sport: '' } : {}),
           ...(role === 'player'  ? { position: '', jerseyNumber: '', matchesPlayed: 0, goals: 0, assists: 0, fitnessScore: 0, status: 'Active', sport: '' } : {}),
           ...(role === 'manager' ? { department: '', sport: '' } : {})
@@ -388,48 +535,37 @@ window.handleGoogleLogin = async () => {
         sessionStorage.setItem('ch_uid',  uid);
         sessionStorage.setItem('ch_role', role);
         sessionStorage.setItem('ch_name', name);
-        redirectToDashboard(role);
+        // SQL mirror
+        const { sqlLogAuth, sqlUpsertUser, initSQL } = await import('./sql-layer.js');
+        await initSQL();
+        sqlUpsertUser({ uid, name, email, role, sport: '' });
+        sqlLogAuth(uid, email, 'google', 'register');
+        await _postLoginBiometricCheck(uid, profileData);
       };
 
-      // Handle cancel
       window._cancelGoogleReg = async () => {
-        modal.style.display = 'none';
-        await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js")
-          .then(({ signOut }) => signOut(auth));
+        document.getElementById('google-role-modal').style.display = 'none';
+        const { signOut } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js");
+        await signOut(auth);
       };
     }
   } catch(e) {
     btn.disabled = false;
-    btn.innerHTML = `<svg class="google-icon" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg> Continue with Google`;
+    btn.innerHTML = googleSVG;
     if (e.code !== 'auth/popup-closed-by-user') {
       showError('login-error', 'Google sign-in failed. Try again.');
     }
   }
 };
 
-window.handleLogin = async () => {
-  const email = document.getElementById('login-email').value.trim();
-  const pass  = document.getElementById('login-pass').value;
-  if (!email || !pass) return showError('login-error', 'Please fill in all fields.');
-  document.getElementById('login-btn').dataset.label = 'Sign In';
-  setLoading('login-btn', true);
-  try {
-    const user = await loginUser(email, pass);
-    redirectToDashboard(user.role);
-  } catch(e) {
-    setLoading('login-btn', false);
-    showError('login-error', e.code === 'auth/invalid-credential'
-      ? 'Invalid email or password.' : e.message);
-  }
-};
-
+// ── Register ──────────────────────────────────────────────
 window.handleRegister = async () => {
-  const name  = document.getElementById('reg-name').value.trim();
-  const role  = document.getElementById('reg-role').value;
-  const sport = document.getElementById('reg-sport').value;
-  const email = document.getElementById('reg-email').value.trim();
-  const pass  = document.getElementById('reg-pass').value;
-  const pass2 = document.getElementById('reg-pass2').value;
+  const name     = document.getElementById('reg-name').value.trim();
+  const role     = document.getElementById('reg-role').value;
+  const sport    = document.getElementById('reg-sport').value;
+  const email    = document.getElementById('reg-email').value.trim();
+  const pass     = document.getElementById('reg-pass').value;
+  const pass2    = document.getElementById('reg-pass2').value;
   const teamCode = document.getElementById('reg-team-code').value.trim().toUpperCase();
 
   if (!name || !role || !sport || !email || !pass || !pass2)
@@ -440,16 +576,98 @@ window.handleRegister = async () => {
     return showError('reg-error', 'Password must be at least 6 characters.');
 
   document.getElementById('reg-btn').dataset.label = 'Create Account';
-  setLoading('reg-btn', true);
+  setLoading('reg-btn', true, 'Create Account');
   try {
-    await registerUser({ name, email, password: pass, role, sport, teamCode });
-    showSuccess('reg-success', '✅ Account created! Redirecting...');
-    setTimeout(() => redirectToDashboard(role), 1500);
+    const { uid } = await registerUser({ name, email, password: pass, role, sport, teamCode });
+    showSuccess('reg-success', '✅ Account created!');
+    // Offer biometric setup after registration
+    await _postLoginBiometricCheck(uid, { name, email, role, uid });
   } catch(e) {
-    setLoading('reg-btn', false);
+    setLoading('reg-btn', false, 'Create Account');
     showError('reg-error', e.code === 'auth/email-already-in-use'
       ? 'Email already registered. Please login.' : e.message);
   }
+};
+
+// ── Post-login biometric flow ─────────────────────────────
+async function _postLoginBiometricCheck(uid, userData) {
+  if (!_biometricAvail) {
+    // Biometrics not supported — just redirect
+    return redirectToDashboard(userData.role);
+  }
+
+  _pendingUid      = uid;
+  _pendingUserData = userData;
+
+  const storedIds      = await getStoredCredentialIds(uid);
+  const hasAny         = storedIds.length > 0;
+  const deviceAlready  = await isCurrentDeviceRegistered(uid);
+
+  if (!hasAny) {
+    // Never set up biometric — offer setup
+    _showBiometricSetupModal('Set Up Biometric Login',
+      'Speed up future logins with your fingerprint or Face ID. Your biometric data never leaves this device — only a secure credential ID is saved.');
+  } else if (hasAny && !deviceAlready) {
+    // Has biometric on another device — offer re-register
+    document.getElementById('biometric-newdevice-modal').style.display = 'grid';
+  } else {
+    // Already set up on this device — go straight to dashboard
+    redirectToDashboard(userData.role);
+  }
+}
+
+function _showBiometricSetupModal(title, desc) {
+  document.getElementById('bio-modal-title').textContent = title;
+  document.getElementById('bio-modal-desc').textContent  = desc;
+  document.getElementById('biometric-setup-modal').style.display = 'grid';
+}
+
+// ── Biometric setup actions ───────────────────────────────
+window.doBiometricSetup = async () => {
+  const btn = document.getElementById('bio-modal-setup-btn');
+  btn.disabled = true;
+  btn.textContent = 'Setting up…';
+  try {
+    await registerBiometric(_pendingUid, _pendingUserData.name, _pendingUserData.email);
+    btn.textContent = '✅ Biometric Enabled!';
+    setTimeout(() => {
+      document.getElementById('biometric-setup-modal').style.display = 'none';
+      redirectToDashboard(_pendingUserData.role);
+    }, 900);
+  } catch (e) {
+    btn.disabled = false;
+    btn.textContent = 'Enable Biometric Login';
+    document.getElementById('bio-modal-desc').textContent =
+      (e.name === 'NotAllowedError')
+        ? 'Permission denied. You can set this up later from your profile.'
+        : 'Setup failed: ' + (e.message || 'Unknown error');
+  }
+};
+
+window.skipBiometricSetup = () => {
+  document.getElementById('biometric-setup-modal').style.display = 'none';
+  redirectToDashboard(_pendingUserData.role);
+};
+
+window.doNewDeviceBiometric = async () => {
+  const btn = document.getElementById('bio-newdevice-btn');
+  btn.disabled = true; btn.textContent = 'Registering…';
+  try {
+    await registerBiometric(_pendingUid, _pendingUserData.name, _pendingUserData.email);
+    btn.textContent = '✅ Registered!';
+    setTimeout(() => {
+      document.getElementById('biometric-newdevice-modal').style.display = 'none';
+      redirectToDashboard(_pendingUserData.role);
+    }, 900);
+  } catch (e) {
+    btn.disabled = false; btn.textContent = 'Register Biometric on This Device';
+    alert('Registration failed: ' + (e.message || e.name));
+  }
+};
+
+window.skipNewDevice = () => {
+  document.getElementById('biometric-newdevice-modal').style.display = 'none';
+  redirectToDashboard(_pendingUserData.role);
 };
 </script>
 </body>
