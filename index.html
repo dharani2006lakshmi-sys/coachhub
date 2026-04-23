@@ -238,7 +238,10 @@ p.form-sub{font-size:.8rem;color:var(--muted);margin-bottom:1.5rem;}
         <input type="email" id="login-email" placeholder="coach@example.com"/>
       </div>
       <div class="form-group">
-        <label>Password</label>
+        <label style="display:flex;justify-content:space-between;align-items:center;">
+          Password
+          <a href="#" onclick="showForgotPassword(event)" style="font-size:.72rem;color:var(--blue);text-decoration:none;font-weight:500;letter-spacing:.02em;">Forgot password?</a>
+        </label>
         <input type="password" id="login-pass" placeholder="••••••••"/>
       </div>
       <button class="btn-submit" id="login-btn" onclick="handleLogin()">Sign In</button>
@@ -299,6 +302,27 @@ p.form-sub{font-size:.8rem;color:var(--muted);margin-bottom:1.5rem;}
         <input type="text" id="reg-team-code" placeholder="e.g. STORM2024"/>
       </div>
       <button class="btn-submit" id="reg-btn" onclick="handleRegister()">Create Account</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Forgot Password Modal ── -->
+<div id="forgot-modal" class="modal-overlay">
+  <div class="modal-box" style="text-align:left;">
+    <span class="modal-icon" style="display:block;text-align:center;">&#128273;</span>
+    <h3 style="text-align:center;margin-bottom:.4rem;">Reset Password</h3>
+    <p style="text-align:center;font-size:.82rem;color:#556a8a;margin-bottom:1.4rem;">Enter your registered email and we'll send a reset link.</p>
+    <div id="forgot-alert-error"   class="alert alert-error"></div>
+    <div id="forgot-alert-success" class="alert alert-success"></div>
+    <div class="form-group">
+      <label style="font-size:.75rem;color:#8fa3c0;display:block;margin-bottom:.4rem;">Email Address</label>
+      <input type="email" id="forgot-email" placeholder="you@example.com"
+        style="width:100%;background:#161f30;border:1px solid #1c2840;border-radius:9px;padding:.7rem 1rem;color:#dce6f5;font-size:.88rem;font-family:Sora,sans-serif;outline:none;"/>
+    </div>
+    <div class="modal-actions" style="margin-top:.75rem;">
+      <button class="btn-modal-primary" id="forgot-send-btn" onclick="sendResetEmail()"
+        style="background:#2979ff;color:#fff;">Send Reset Link</button>
+      <button class="btn-modal-skip" onclick="closeForgotModal()">Cancel</button>
     </div>
   </div>
 </div>
@@ -668,6 +692,63 @@ window.doNewDeviceBiometric = async () => {
 window.skipNewDevice = () => {
   document.getElementById('biometric-newdevice-modal').style.display = 'none';
   redirectToDashboard(_pendingUserData.role);
+};
+
+// ── Forgot Password ────────────────────────────────────────
+import { sendPasswordResetEmail }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+window.showForgotPassword = (e) => {
+  e.preventDefault();
+  // Pre-fill email if already typed
+  const emailInput = document.getElementById('login-email').value.trim();
+  if (emailInput) document.getElementById('forgot-email').value = emailInput;
+  document.getElementById('forgot-alert-error').classList.remove('show');
+  document.getElementById('forgot-alert-success').classList.remove('show');
+  document.getElementById('forgot-modal').style.display = 'grid';
+};
+
+window.closeForgotModal = () => {
+  document.getElementById('forgot-modal').style.display = 'none';
+};
+
+window.sendResetEmail = async () => {
+  const email = document.getElementById('forgot-email').value.trim();
+  const errEl = document.getElementById('forgot-alert-error');
+  const okEl  = document.getElementById('forgot-alert-success');
+  errEl.classList.remove('show'); okEl.classList.remove('show');
+
+  if (!email) {
+    errEl.textContent = 'Please enter your email address.';
+    return errEl.classList.add('show');
+  }
+
+  const btn = document.getElementById('forgot-send-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>Sending…';
+
+  try {
+    await sendPasswordResetEmail(auth, email);
+    btn.disabled = false;
+    btn.textContent = 'Send Reset Link';
+    okEl.textContent = '✅ Reset link sent! Check your inbox (and spam folder).';
+    okEl.classList.add('show');
+    // Auto-close after 4 s
+    setTimeout(() => {
+      document.getElementById('forgot-modal').style.display = 'none';
+      okEl.classList.remove('show');
+    }, 4000);
+  } catch (e) {
+    btn.disabled = false;
+    btn.textContent = 'Send Reset Link';
+    const msg = e.code === 'auth/user-not-found'
+      ? 'No account found with this email.'
+      : e.code === 'auth/invalid-email'
+        ? 'Invalid email address.'
+        : 'Failed to send reset email. Try again.';
+    errEl.textContent = msg;
+    errEl.classList.add('show');
+  }
 };
 </script>
 </body>
