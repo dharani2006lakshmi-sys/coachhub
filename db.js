@@ -123,3 +123,36 @@ export const fmtDateTime = (ts) => {
   const d = ts.toDate ? ts.toDate() : new Date(ts);
   return d.toLocaleString('en-GB', { day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' });
 };
+
+// ── ATTENDANCE ────────────────────────────────────────────
+export const addAttendanceSession = (data) =>
+  addDoc(collection(db, 'attendance'), { ...data, createdAt: serverTimestamp() });
+
+export const getAttendanceSessions = async () => {
+  const q    = query(collection(db, 'attendance'), orderBy('createdAt', 'desc'));
+  const snap = await getDocs(q);
+  return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+};
+
+export const deleteAttendanceSession = (id) =>
+  deleteDoc(doc(db, 'attendance', id));
+
+// ── CHAT ─────────────────────────────────────────────────
+export const sendChatMessage = (data) =>
+  addDoc(collection(db, 'chat'), { ...data, ts: serverTimestamp() });
+
+export const getChatMessages = async (limitN = 60) => {
+  const q    = query(collection(db, 'chat'), orderBy('ts', 'asc'));
+  const snap = await getDocs(q);
+  return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+};
+
+// ── PROGRESS SNAPSHOTS (for Chart) ───────────────────────
+export const saveProgressSnapshot = (uid, data) =>
+  addDoc(collection(db, 'progress'), { uid, ...data, ts: serverTimestamp() });
+
+export const getProgressSnapshots = async (uid) => {
+  const q    = query(collection(db, 'progress'), where('uid', '==', uid), orderBy('ts', 'asc'));
+  const snap = await getDocs(q);
+  return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+};
